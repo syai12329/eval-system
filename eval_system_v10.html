@@ -1325,6 +1325,7 @@ tr.row-selected td { background: #EBF4FF; }
           <li><strong>배포</strong> → <strong>새 배포</strong> → 웹 앱 선택</li>
           <li>액세스: <strong>"모든 사용자"</strong> 선택 후 배포</li>
           <li style="color:var(--amber)">⚠️ 코드 수정 후엔 <strong>배포 관리 → 수정 → 새 버전</strong> 으로 재배포 필수</li>
+          <li style="color:var(--teal)" id="hardcoded-url-notice"></li>
           <li>생성된 <strong>웹 앱 URL</strong>을 아래에 붙여넣기</li>
         </ol>
       </div>
@@ -2818,7 +2819,7 @@ function loginAs(userId, userName) {
   toast(`${userName}님으로 로그인되었습니다`);
   // 로그인 후 구글 시트에서 최신 데이터 자동 로드
   if (GS_CONFIG.url && GS_CONFIG.connected) {
-    setTimeout(() => syncFromSheet(), 500);
+    setTimeout(() => syncFromSheet(), 800);
   }
 }
 
@@ -3171,17 +3172,36 @@ function applyAllAutoScores() {
    구조: 지역별 탭(영암군/인천시/남원시)
          사업별 1행 upsert (항상 최신 데이터만 유지)
 ════════════════════════════════════════════ */
+// ★ Apps Script URL을 여기에 직접 입력하면 모든 평가자가 자동 연결됩니다
+const GS_HARDCODED_URL = "https://script.google.com/macros/s/AKfycbxszgkIE8xwOGSDm99YEq0Oky0kocMRdbIDKhukSLB5rzpAhgKmhRpfQ3yDz1tu66Hd/exec";
+
 let GS_CONFIG = {
-  url: "",
-  connected: false,
+  url: GS_HARDCODED_URL,
+  connected: GS_HARDCODED_URL !== "",
   lastSync: null,
 };
 
 function loadGsConfig() {
+  // 파일에 비밀번호가 고정되어 있으므로 localStorage 오버라이드 무력화
+  try { localStorage.removeItem("pw_overrides_v1"); } catch(e) {}
   try {
     const s = localStorage.getItem("gs_config_v2");
-    if (s) GS_CONFIG = { ...GS_CONFIG, ...JSON.parse(s) };
+    if (s) {
+      const saved = JSON.parse(s);
+      // 하드코딩 URL이 있으면 항상 우선 적용
+      GS_CONFIG = {
+        ...GS_CONFIG,
+        ...saved,
+        url: GS_HARDCODED_URL || saved.url || "",
+        connected: (GS_HARDCODED_URL !== "") || (saved.connected && !!saved.url),
+      };
+    }
   } catch(e) {}
+  // 하드코딩 URL이 있으면 항상 연결 상태 유지
+  if (GS_HARDCODED_URL) {
+    GS_CONFIG.url = GS_HARDCODED_URL;
+    GS_CONFIG.connected = true;
+  }
   updateSyncBar();
 }
 
@@ -3193,6 +3213,12 @@ function saveGsConfigLocal() {
 function openSetupModal() {
   document.getElementById("gs-url-input").value = GS_CONFIG.url || "";
   document.getElementById("gs-test-result").style.display = "none";
+  const notice = document.getElementById("hardcoded-url-notice");
+  if (notice) {
+    notice.textContent = GS_HARDCODED_URL
+      ? "✅ 파일에 URL이 고정 설정되어 있어 모든 평가자가 자동 연결됩니다"
+      : "ℹ️ URL을 입력하고 저장하면 이 브라우저에서만 연결됩니다";
+  }
   openModal("modal-setup");
 }
 
