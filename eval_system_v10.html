@@ -1507,30 +1507,23 @@ let STATE = {
 
 // ── 담당자 정의 (영암군) ──
 // ── 비밀번호는 관리자 페이지에서 변경 가능 ──
-// 초기 비밀번호: 이름 + 1234  (예: 이서연1234)
-// 관리자 초기 비밀번호: admin1234
+// 초기 비밀번호: 1234 (전원 동일)
+// 관리자 비밀번호: 1234
 const YEONGAM_USERS = [
-  { id:"이서연", name:"이서연", pw:"이서연1234", depts:["홍보전략실","관광과","인구청년과"] },
-  { id:"최승우", name:"최승우", pw:"최승우1234", depts:["문화예술과","군민안전과","건설교통과","도시디자인과"] },
-  { id:"구본승", name:"구본승", pw:"구본승1234", depts:["주민복지과","지역순환경제과","기업지원과"] },
-  { id:"김유리", name:"김유리", pw:"김유리1234", depts:["가족행복과","통합돌봄추진단","환경기후과","농업기술센터"] },
-  { id:"장상화", name:"장상화", pw:"장상화1234", depts:["농업정책과","농축산유통과"] },
-  { id:"김미영", name:"김미영", pw:"김미영1234", depts:["자치행정과","인재육성체육과"] },
-  { id:"김건호", name:"김건호", pw:"김건호1234", depts:["자치행정과","인재육성체육과"] },
-  { id:"이윤수", name:"이윤수", pw:"이윤수1234", depts:["산림휴양과"] },
+  { id:"이서연", name:"이서연", pw:"1234", depts:["홍보전략실","관광과","인구청년과"] },
+  { id:"최승우", name:"최승우", pw:"1234", depts:["문화예술과","군민안전과","건설교통과","도시디자인과"] },
+  { id:"구본승", name:"구본승", pw:"1234", depts:["주민복지과","지역순환경제과","기업지원과"] },
+  { id:"김유리", name:"김유리", pw:"1234", depts:["가족행복과","통합돌봄추진단","환경기후과","농업기술센터"] },
+  { id:"장상화", name:"장상화", pw:"1234", depts:["농업정책과","농축산유통과"] },
+  { id:"김미영", name:"김미영", pw:"1234", depts:["자치행정과","인재육성체육과"] },
+  { id:"김건호", name:"김건호", pw:"1234", depts:["자치행정과","인재육성체육과"] },
+  { id:"이윤수", name:"이윤수", pw:"1234", depts:["산림휴양과"] },
 ];
 
-const ADMIN_PW_DEFAULT = "admin1234";
+const ADMIN_PW_DEFAULT = "1234";
 
 // 비밀번호는 localStorage에 저장된 변경값 우선 사용
 function getUserPw(userId) {
-  try {
-    const saved = localStorage.getItem("pw_overrides_v1");
-    if (saved) {
-      const overrides = JSON.parse(saved);
-      if (overrides[userId]) return overrides[userId];
-    }
-  } catch(e) {}
   if (userId === "admin") return ADMIN_PW_DEFAULT;
   const u = YEONGAM_USERS.find(u => u.id === userId);
   return u ? u.pw : null;
