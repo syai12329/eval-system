@@ -3934,7 +3934,7 @@ function renderDdayBar() {
     bar.innerHTML = '<span class="dday-bar-empty">일정이 설정되지 않았습니다</span>';
     // 관리자면 편집 버튼 표시
     if (CURRENT_USER && CURRENT_USER.isAdmin) {
-      bar.innerHTML += '<button class="dday-edit-btn" onclick="nav('schedule')">+ 일정 설정</button>';
+      bar.innerHTML += '<button class="dday-edit-btn" onclick="nav(\'schedule\')">+ 일정 설정</button>';
     }
     return;
   }
@@ -3951,7 +3951,7 @@ function renderDdayBar() {
     </span>`;
   }).join("");
   if (CURRENT_USER && CURRENT_USER.isAdmin) {
-    html += '<button class="dday-edit-btn" onclick="nav('schedule')">✏️ 일정 편집</button>';
+    html += '<button class="dday-edit-btn" onclick="nav(\'schedule\')">✏️ 일정 편집</button>';
   }
   bar.innerHTML = html;
 }
