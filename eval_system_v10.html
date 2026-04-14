@@ -681,6 +681,57 @@ tr.row-selected td { background: #EBF4FF; }
 .exec-bar-bg { height: 4px; background: var(--surface3); border-radius: 2px; overflow:hidden; margin-top:4px; }
 .exec-bar-fill { height: 100%; border-radius: 2px; transition: width 0.4s; }
 
+
+/* ── D-DAY BANNER ── */
+.dday-bar {
+  display: flex; align-items: center; gap: 10px; flex-wrap: wrap;
+  padding: 7px 20px; background: var(--surface);
+  border-bottom: 1px solid var(--border);
+  flex-shrink: 0; min-height: 36px;
+}
+.dday-chip {
+  display: inline-flex; align-items: center; gap: 5px;
+  padding: 3px 10px; border-radius: 20px;
+  font-size: 11px; font-weight: 600; white-space: nowrap;
+  border: 1px solid transparent;
+}
+.dday-chip .chip-label { font-weight: 400; opacity: 0.85; }
+.dday-chip .chip-dday  { font-family: 'JetBrains Mono', monospace; font-size: 12px; }
+.dday-chip.urgent  { background: var(--red-light);   border-color: rgba(192,40,40,0.2);  color: var(--red);   }
+.dday-chip.soon    { background: var(--amber-light); border-color: rgba(176,90,16,0.2);  color: var(--amber); }
+.dday-chip.normal  { background: var(--teal-light);  border-color: rgba(29,122,95,0.2);  color: var(--teal);  }
+.dday-chip.done    { background: var(--surface2);    border-color: var(--border);        color: var(--text3); }
+.dday-bar-empty    { font-size: 11px; color: var(--text4); }
+.dday-edit-btn {
+  margin-left: auto; background: none; border: 1px solid var(--border);
+  border-radius: var(--radius); padding: 2px 8px; font-size: 10px;
+  color: var(--text3); cursor: pointer; font-family: 'Noto Sans KR', sans-serif;
+  transition: all 0.15s; white-space: nowrap;
+}
+.dday-edit-btn:hover { background: var(--surface2); color: var(--text2); }
+
+/* ── SCHEDULE PANEL ── */
+.schedule-item {
+  display: flex; align-items: center; gap: 12px;
+  padding: 12px 16px; border-bottom: 1px solid var(--border);
+}
+.schedule-item:last-child { border-bottom: none; }
+.schedule-dday {
+  font-family: 'JetBrains Mono', monospace; font-size: 18px; font-weight: 700;
+  min-width: 64px; text-align: center;
+}
+.schedule-info { flex: 1; }
+.schedule-name { font-size: 13px; font-weight: 600; color: var(--text1); margin-bottom: 2px; }
+.schedule-date { font-size: 11px; color: var(--text3); }
+.schedule-bar  { height: 4px; background: var(--surface2); border-radius: 2px; margin-top: 6px; overflow: hidden; }
+.schedule-bar-fill { height: 100%; border-radius: 2px; transition: width 0.5s ease; }
+
+/* 일정 입력 폼 */
+.schedule-form-row {
+  display: grid; grid-template-columns: 1fr 1fr auto;
+  gap: 8px; align-items: end; margin-bottom: 8px;
+}
+
 </style>
 </head>
 <body>
@@ -769,6 +820,10 @@ tr.row-selected td { background: #EBF4FF; }
         <svg class="nav-icon" viewBox="0 0 16 16" fill="currentColor"><path d="M6.5 1h3l.5 1.5a5 5 0 011.2.7L13 2.5l2.1 2.1-1 1.7a5 5 0 01.4 1.2L16 8v3l-1.5.5a5 5 0 01-.7 1.2l.7 1.7-2.1 2.1-1.7-1a5 5 0 01-1.2.4L9 17H6l-.5-1.5a5 5 0 01-1.2-.7l-1.7 1L.5 13.7l1-1.7A5 5 0 011 10.8L0 9.5V7l1.5-.5A5 5 0 012.2 5.3l-.7-1.7L3.6.5l1.7 1A5 5 0 016.5 1zm1.5 4a3 3 0 100 6A3 3 0 008 5z"/></svg>
         지표 관리
       </button>
+      <button class="nav-item" id="nav-schedule" onclick="nav('schedule')" style="display:none">
+        <svg class="nav-icon" viewBox="0 0 16 16" fill="currentColor"><path d="M4 1v1H2a1 1 0 00-1 1v11a1 1 0 001 1h12a1 1 0 001-1V3a1 1 0 00-1-1h-2V1h-1v1H5V1H4zm0 3h8v1H4V4zM2 7h12v7H2V7zm2 2v1h2V9H4zm3 0v1h2V9H7zm3 0v1h2V9h-2zm-6 3v1h2v-1H4zm3 0v1h2v-1H7z"/></svg>
+        일정 관리
+      </button>
       <button class="nav-item" id="nav-pwmgr" onclick="nav('pwmgr')" style="display:none">
         <svg class="nav-icon" viewBox="0 0 16 16" fill="currentColor"><path d="M8 1a4 4 0 014 4v1h1a1 1 0 011 1v7a1 1 0 01-1 1H3a1 1 0 01-1-1V7a1 1 0 011-1h1V5a4 4 0 014-4zm0 2a2 2 0 00-2 2v1h4V5a2 2 0 00-2-2zm0 6a1 1 0 100 2 1 1 0 000-2z"/></svg>
         비밀번호 관리
@@ -816,6 +871,12 @@ tr.row-selected td { background: #EBF4FF; }
       <button class="sync-btn primary" onclick="syncToSheet()" id="btn-sync-up" style="display:none">↑ 동기화</button>
       <button class="sync-btn" onclick="openSetupModal()">⚙ 구글 시트 연결</button>
     </div>
+
+    <!-- D-DAY BANNER -->
+    <div class="dday-bar" id="dday-bar">
+      <span class="dday-bar-empty">일정이 설정되지 않았습니다</span>
+    </div>
+
     <div class="panels">
 
       <!-- ── PANEL: LIST ── -->
@@ -1182,6 +1243,31 @@ tr.row-selected td { background: #EBF4FF; }
       </div>
 
 
+      <!-- ── PANEL: SCHEDULE ── -->
+      <div class="panel" id="panel-schedule">
+        <div class="card mb-12">
+          <div class="card-header">
+            <span class="card-title">📅 평가 일정 관리</span>
+            <span class="card-note">관리자 전용 — 설정 후 모든 평가자 화면에 D-day 표시</span>
+          </div>
+          <div class="card-body">
+            <div style="background:var(--blue-light);border:1px solid rgba(26,95,165,0.2);border-radius:var(--radius);padding:10px 12px;font-size:12px;color:var(--blue);margin-bottom:16px">
+              📌 일정을 저장하면 구글 시트에 공유되어 모든 평가자가 D-day를 확인할 수 있습니다.
+            </div>
+            <div id="schedule-form-wrap"></div>
+            <button class="btn btn-secondary btn-sm mt-8" onclick="addScheduleRow()">+ 일정 추가</button>
+            <div style="display:flex;gap:8px;margin-top:14px">
+              <button class="btn btn-teal" onclick="saveSchedule()">💾 일정 저장</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="card" id="schedule-preview-card">
+          <div class="card-header"><span class="card-title">일정 현황</span></div>
+          <div id="schedule-preview-body"></div>
+        </div>
+      </div>
+
       <!-- ── PANEL: PASSWORD MANAGER ── -->
       <div class="panel" id="panel-pwmgr">
         <div class="card mb-12">
@@ -1487,6 +1573,176 @@ const DEFAULT_INDICATORS = {
     {id:"4-2",label:"사업평가 실시 여부",max:10},
     {id:"4-3",label:"지적사항 환류 여부",max:10},
   ]},
+
+  /* ── 인천시 지방보조사업 성과평가 공통 ── */
+  "인천시_지방보조사업_성과평가_공통": {
+    sections:[
+      { id:"plan", label:"사업계획", max:20, items:[
+        {id:"1-1",label:"법령 또는 조례 근거 여부",max:3},
+        {id:"1-2",label:"유사·중복 여부",max:3},
+        {id:"1-3",label:"사업계획 구체성",max:3},
+        {id:"1-4",label:"예산편성 계획성",max:6},
+        {id:"1-5",label:"성과목표/자부담 비중",max:5},
+      ]},
+      { id:"mgmt", label:"사업관리", max:40, items:[
+        {id:"2-1",label:"계획 대비 집행",max:6},
+        {id:"2-2",label:"예산 집행률",max:6},
+        {id:"2-3",label:"증빙서류 완결성",max:8},
+        {id:"2-4",label:"보조금 적정 사용 여부",max:8},
+        {id:"2-5",label:"일반시민 대상 여부",max:6},
+        {id:"2-6",label:"경비 집행 적정성",max:6},
+      ]},
+      { id:"outcome", label:"사업성과", max:40, items:[
+        {id:"3-1",label:"성과목표 달성도",max:15},
+        {id:"3-2",label:"최종수혜자 만족도",max:10},
+        {id:"3-3",label:"계속 지원 필요성",max:15},
+      ]},
+    ],
+    deducts:[
+      {id:"d-1",label:"완료서류 기한 초과 제출",val:-5},
+      {id:"d-2",label:"예비비 편성",val:-2},
+    ],
+  },
+  "인천시_지방보조사업_유지필요성평가_공통": {
+    sections:[
+      { id:"plan", label:"사업계획", max:25, items:[
+        {id:"1-1",label:"법령·조례 근거 여부",max:3},
+        {id:"1-2",label:"유사·중복 여부",max:5},
+        {id:"1-3",label:"사업계획 구체성·적절성",max:6},
+        {id:"1-4",label:"예산편성 효율성·계획성",max:6},
+        {id:"1-5",label:"성과목표/자부담 비중",max:5},
+      ]},
+      { id:"mgmt", label:"사업관리", max:25, items:[
+        {id:"2-1",label:"계획 대비 집행",max:3},
+        {id:"2-2",label:"예산 집행률",max:3},
+        {id:"2-3",label:"증빙서류 완결성",max:8},
+        {id:"2-4",label:"보조금 적정 사용 여부",max:8},
+        {id:"2-5",label:"보조금 규모 안정성",max:3},
+      ]},
+      { id:"outcome", label:"사업성과", max:50, items:[
+        {id:"3-1",label:"최근 2년 평가점수 종합 (점수합×0.2)",max:20},
+        {id:"3-2",label:"성과목표 달성도",max:15},
+        {id:"3-3",label:"계속 지원 필요성",max:15},
+      ]},
+    ],
+    deducts:[
+      {id:"d-1",label:"완료서류 기한 초과 제출",val:-5},
+      {id:"d-2",label:"예비비 편성",val:-2},
+    ],
+  },
+  "인천시_주요재정사업_성과평가_공통": {
+    sections:[
+      { id:"plan", label:"사업계획", max:30, items:[
+        {id:"1-1",label:"추진 근거 (법령·조례·상위계획)",max:10},
+        {id:"1-2",label:"유사·중복 여부",max:3},
+        {id:"1-3",label:"추진일정 명확성",max:2},
+        {id:"1-4",label:"추진방식 적정성",max:5},
+        {id:"2-1",label:"사업목적 연계성",max:5},
+        {id:"2-2",label:"목표 구체성·합리성",max:5},
+      ]},
+      { id:"mgmt", label:"사업관리", max:35, items:[
+        {id:"3-1",label:"예산 집행률",max:20},
+        {id:"3-2",label:"정기 모니터링 여부",max:5},
+        {id:"3-3",label:"문제점 해결 여부",max:10},
+      ]},
+      { id:"outcome", label:"성과/환류", max:35, items:[
+        {id:"4-1",label:"성과지표 목표 달성도",max:15},
+        {id:"4-2",label:"사업평가 실시 여부",max:10},
+        {id:"4-3",label:"지적사항 환류 여부",max:10},
+      ]},
+    ],
+    deducts:[],
+  },
+  "인천시_주요재정사업_성과평가_행사성사업": { override_items:[
+    {id:"4-1a",label:"성과지표 목표 달성도 (9점)",max:9},
+    {id:"4-1b",label:"참여자 만족도 (6점)",max:6},
+    {id:"4-2",label:"사업평가 실시 여부",max:10},
+    {id:"4-3",label:"지적사항 환류 여부",max:10},
+  ]},
+  "남원시_지방보조사업_성과평가_공통": {
+    sections:[
+      { id:"plan", label:"사업계획", max:20, items:[
+        {id:"1-1",label:"법령 또는 조례 근거 여부",max:3},
+        {id:"1-2",label:"유사·중복 여부",max:3},
+        {id:"1-3",label:"사업계획 구체성",max:3},
+        {id:"1-4",label:"예산편성 계획성",max:6},
+        {id:"1-5",label:"성과목표/자부담 비중",max:5},
+      ]},
+      { id:"mgmt", label:"사업관리", max:40, items:[
+        {id:"2-1",label:"계획 대비 집행",max:6},
+        {id:"2-2",label:"예산 집행률",max:6},
+        {id:"2-3",label:"증빙서류 완결성",max:8},
+        {id:"2-4",label:"보조금 적정 사용 여부",max:8},
+        {id:"2-5",label:"일반시민 대상 여부",max:6},
+        {id:"2-6",label:"경비 집행 적정성",max:6},
+      ]},
+      { id:"outcome", label:"사업성과", max:40, items:[
+        {id:"3-1",label:"성과목표 달성도",max:15},
+        {id:"3-2",label:"최종수혜자 만족도",max:10},
+        {id:"3-3",label:"계속 지원 필요성",max:15},
+      ]},
+    ],
+    deducts:[
+      {id:"d-1",label:"완료서류 기한 초과 제출",val:-5},
+      {id:"d-2",label:"예비비 편성",val:-2},
+    ],
+  },
+  "남원시_지방보조사업_유지필요성평가_공통": {
+    sections:[
+      { id:"plan", label:"사업계획", max:25, items:[
+        {id:"1-1",label:"법령·조례 근거 여부",max:3},
+        {id:"1-2",label:"유사·중복 여부",max:5},
+        {id:"1-3",label:"사업계획 구체성·적절성",max:6},
+        {id:"1-4",label:"예산편성 효율성·계획성",max:6},
+        {id:"1-5",label:"성과목표/자부담 비중",max:5},
+      ]},
+      { id:"mgmt", label:"사업관리", max:25, items:[
+        {id:"2-1",label:"계획 대비 집행",max:3},
+        {id:"2-2",label:"예산 집행률",max:3},
+        {id:"2-3",label:"증빙서류 완결성",max:8},
+        {id:"2-4",label:"보조금 적정 사용 여부",max:8},
+        {id:"2-5",label:"보조금 규모 안정성",max:3},
+      ]},
+      { id:"outcome", label:"사업성과", max:50, items:[
+        {id:"3-1",label:"최근 2년 평가점수 종합 (점수합×0.2)",max:20},
+        {id:"3-2",label:"성과목표 달성도",max:15},
+        {id:"3-3",label:"계속 지원 필요성",max:15},
+      ]},
+    ],
+    deducts:[
+      {id:"d-1",label:"완료서류 기한 초과 제출",val:-5},
+      {id:"d-2",label:"예비비 편성",val:-2},
+    ],
+  },
+  "남원시_주요재정사업_성과평가_공통": {
+    sections:[
+      { id:"plan", label:"사업계획", max:30, items:[
+        {id:"1-1",label:"추진 근거 (법령·조례·상위계획)",max:10},
+        {id:"1-2",label:"유사·중복 여부",max:3},
+        {id:"1-3",label:"추진일정 명확성",max:2},
+        {id:"1-4",label:"추진방식 적정성",max:5},
+        {id:"2-1",label:"사업목적 연계성",max:5},
+        {id:"2-2",label:"목표 구체성·합리성",max:5},
+      ]},
+      { id:"mgmt", label:"사업관리", max:35, items:[
+        {id:"3-1",label:"예산 집행률",max:20},
+        {id:"3-2",label:"정기 모니터링 여부",max:5},
+        {id:"3-3",label:"문제점 해결 여부",max:10},
+      ]},
+      { id:"outcome", label:"성과/환류", max:35, items:[
+        {id:"4-1",label:"성과지표 목표 달성도",max:15},
+        {id:"4-2",label:"사업평가 실시 여부",max:10},
+        {id:"4-3",label:"지적사항 환류 여부",max:10},
+      ]},
+    ],
+    deducts:[],
+  },
+  "남원시_주요재정사업_성과평가_행사성사업": { override_items:[
+    {id:"4-1a",label:"성과지표 목표 달성도 (9점)",max:9},
+    {id:"4-1b",label:"참여자 만족도 (6점)",max:6},
+    {id:"4-2",label:"사업평가 실시 여부",max:10},
+    {id:"4-3",label:"지적사항 환류 여부",max:10},
+  ]},
 };
 
 /* ── STATE ── */
@@ -1502,9 +1758,17 @@ let STATE = {
   reqDocs: {},    // { regionId: { projectId: "요청자료" } }
   memoDate: {},   // { regionId: { projectId: "면담일시" } }
   memo: {},       // { regionId: { projectId: "메모내용" } }
+  schedules: [],  // [{ id, name, date, color }]
   _uploadRawData: null,
   _uploadHeaders: null,
 };
+
+// ── 기본 일정 (관리자가 변경 가능) ──
+const DEFAULT_SCHEDULES = [
+  { id:"s1", name:"부서 서면평가 마감", date:"2026-04-24", color:"urgent" },
+  { id:"s2", name:"부서 면담",          date:"2026-05-19", color:"soon"   },
+  { id:"s3", name:"평가 완료",          date:"2026-06-05", color:"normal" },
+];
 
 // ── 담당자 정의 (영암군) ──
 // ── 비밀번호는 관리자 페이지에서 변경 가능 ──
@@ -1614,8 +1878,21 @@ function migrateSeq() {
 /* ── INDICATOR RESOLVER ── */
 function resolveIndicators(project) {
   const { cat, evalType, type } = project;
-  const baseKey = `${cat}_${evalType}_공통`;
-  const overrideKey = `${cat}_${evalType}_${type}`;
+  // 지역별 전용 지표 우선 탐색
+  const reg = activeRegion();
+  const regionName = reg ? reg.name : "";
+  const regionPrefix = regionName ? regionName + "_" : "";
+
+  // 기본 키 (지역명_구분_평가유형_공통 → 없으면 구분_평가유형_공통)
+  const baseKeyRegion  = `${regionPrefix}${cat}_${evalType}_공통`;
+  const baseKeyCommon  = `${cat}_${evalType}_공통`;
+  const baseKey = STATE.indicators[baseKeyRegion] ? baseKeyRegion : baseKeyCommon;
+
+  // 오버라이드 키 (지역명_구분_평가유형_통계목 → 없으면 구분_평가유형_통계목)
+  const overrideKeyRegion = `${regionPrefix}${cat}_${evalType}_${type}`;
+  const overrideKeyCommon = `${cat}_${evalType}_${type}`;
+  const overrideKey = STATE.indicators[overrideKeyRegion] ? overrideKeyRegion : overrideKeyCommon;
+
   const base = STATE.indicators[baseKey];
   if (!base) return null;
   const resolved = JSON.parse(JSON.stringify(base));
@@ -1726,7 +2003,7 @@ function nav(name) {
   const navEl = document.getElementById(`nav-${name}`);
   if (navEl) navEl.classList.add("active");
 
-  const titles = { list:"사업 목록", eval:"평가 입력", dash:"종합 현황", relative:"상대평가 분배", report:"보고서 출력", indicators:"지표 관리", upload:"엑셀 업로드", pwmgr:"비밀번호 관리" };
+  const titles = { list:"사업 목록", eval:"평가 입력", dash:"종합 현황", relative:"상대평가 분배", report:"보고서 출력", indicators:"지표 관리", upload:"엑셀 업로드", pwmgr:"비밀번호 관리", schedule:"일정 관리" };
   document.getElementById("topbar-title").textContent = titles[name] || "";
 
   if (name === "dash") renderDash();
@@ -1734,6 +2011,7 @@ function nav(name) {
   if (name === "eval" && STATE.activeProjectId) renderEvalForm();
   if (name === "relative") renderRelative();
   if (name === "pwmgr") renderPwMgrTable();
+  if (name === "schedule") renderSchedulePanel();
   if (name === "upload") {
     const card = document.getElementById("auto-score-upload-card");
     if (card) card.style.display = (CURRENT_USER && CURRENT_USER.isAdmin) ? "block" : "none";
@@ -2429,7 +2707,24 @@ function previewReport() {
 /* ── INDICATOR EDITOR ── */
 function renderIndicatorKeyOptions() {
   const sel = document.getElementById("ind-key-sel");
-  sel.innerHTML = Object.keys(STATE.indicators).map(k=>`<option value="${k}">${k}</option>`).join("");
+  const allKeys = Object.keys(STATE.indicators);
+
+  // 지역별 그룹핑
+  const groups = {
+    "영암군 (공통)":    allKeys.filter(k => !k.startsWith("인천시") && !k.startsWith("남원시")),
+    "인천시":           allKeys.filter(k => k.startsWith("인천시")),
+    "남원시":           allKeys.filter(k => k.startsWith("남원시")),
+  };
+
+  sel.innerHTML = Object.entries(groups).map(([groupName, keys]) => {
+    if (!keys.length) return "";
+    // 키 이름에서 지역 접두어 제거해서 표시
+    const opts = keys.map(k => {
+      const label = k.replace(/^(인천시|남원시)_/, "");
+      return `<option value="${k}">${label}</option>`;
+    }).join("");
+    return `<optgroup label="── ${groupName} ──">${opts}</optgroup>`;
+  }).join("");
 }
 
 function renderIndicatorEditor() {
@@ -2842,6 +3137,8 @@ function updateUserBadge() {
   // 관리자 전용 메뉴 표시
   const pwMenu = document.getElementById("nav-pwmgr");
   if (pwMenu) pwMenu.style.display = CURRENT_USER.isAdmin ? "flex" : "none";
+  const schedMenu = document.getElementById("nav-schedule");
+  if (schedMenu) schedMenu.style.display = CURRENT_USER.isAdmin ? "flex" : "none";
   // 관리자는 지역 탭 전환 가능, 일반 담당자는 숨김 처리 유지
   const addRegBtn = document.querySelector(".add-region-btn");
   if (addRegBtn) addRegBtn.style.display = CURRENT_USER.isAdmin ? "block" : "none";
@@ -3308,6 +3605,8 @@ async function syncFromSheet() {
     // 지역 데이터 반영
     const regionData = (json.data || {})[reg.name] || {};
     applySheetData(regionData, reg);
+    // 일정 데이터도 함께 불러오기
+    if (json.data) loadScheduleFromSheet(json.data);
 
     GS_CONFIG.lastSync = new Date().toISOString();
     saveGsConfigLocal();
@@ -3599,12 +3898,214 @@ function changeMyPassword() {
   toast("✅ 비밀번호가 변경되었습니다");
 }
 
+
+/* ── SCHEDULE & D-DAY ── */
+function initSchedules() {
+  if (!STATE.schedules || STATE.schedules.length === 0) {
+    STATE.schedules = JSON.parse(JSON.stringify(DEFAULT_SCHEDULES));
+  }
+}
+
+function getDday(dateStr) {
+  if (!dateStr) return null;
+  const today = new Date(); today.setHours(0,0,0,0);
+  const target = new Date(dateStr); target.setHours(0,0,0,0);
+  return Math.round((target - today) / (1000 * 60 * 60 * 24));
+}
+
+function ddayLabel(diff) {
+  if (diff === 0)  return "D-Day";
+  if (diff > 0)    return `D-${diff}`;
+  return `D+${Math.abs(diff)}`;
+}
+
+function ddayClass(diff) {
+  if (diff < 0)   return "done";
+  if (diff <= 3)  return "urgent";   // 3일 이내 → 빨강
+  if (diff <= 7)  return "soon";     // 7일 이내 → 주황
+  return "normal";                   // 15일 이상 → 초록
+}
+
+function renderDdayBar() {
+  const bar = document.getElementById("dday-bar");
+  if (!bar) return;
+  const schedules = STATE.schedules || [];
+  if (schedules.length === 0) {
+    bar.innerHTML = '<span class="dday-bar-empty">일정이 설정되지 않았습니다</span>';
+    // 관리자면 편집 버튼 표시
+    if (CURRENT_USER && CURRENT_USER.isAdmin) {
+      bar.innerHTML += '<button class="dday-edit-btn" onclick="nav('schedule')">+ 일정 설정</button>';
+    }
+    return;
+  }
+  let html = schedules.map(s => {
+    const diff = getDday(s.date);
+    if (diff === null) return "";
+    const cls = ddayClass(diff);
+    const label = ddayLabel(diff);
+    const dateFormatted = s.date ? new Date(s.date).toLocaleDateString('ko-KR', {month:'long', day:'numeric'}) : "";
+    return `<span class="dday-chip ${cls}">
+      <span class="chip-label">${s.name}</span>
+      <span class="chip-dday">${label}</span>
+      <span class="chip-label" style="font-size:10px">(${dateFormatted})</span>
+    </span>`;
+  }).join("");
+  if (CURRENT_USER && CURRENT_USER.isAdmin) {
+    html += '<button class="dday-edit-btn" onclick="nav('schedule')">✏️ 일정 편집</button>';
+  }
+  bar.innerHTML = html;
+}
+
+// ── 일정 관리 패널 ──
+function renderSchedulePanel() {
+  renderScheduleForm();
+  renderSchedulePreview();
+}
+
+function renderScheduleForm() {
+  const wrap = document.getElementById("schedule-form-wrap");
+  if (!wrap) return;
+  const schedules = STATE.schedules || [];
+  wrap.innerHTML = schedules.map((s, i) => `
+    <div class="schedule-form-row" id="srow-${i}">
+      <div class="form-group" style="margin:0">
+        <label class="form-label">일정명</label>
+        <input type="text" class="form-control" value="${s.name}"
+          oninput="STATE.schedules[${i}].name=this.value; renderDdayBar()">
+      </div>
+      <div class="form-group" style="margin:0">
+        <label class="form-label">날짜</label>
+        <input type="date" class="form-control" value="${s.date}"
+          onchange="STATE.schedules[${i}].date=this.value; renderDdayBar(); renderSchedulePreview()">
+      </div>
+      <div style="padding-top:18px">
+        <button class="btn btn-sm btn-danger" onclick="removeSchedule(${i})">✕</button>
+      </div>
+    </div>`).join("");
+}
+
+function renderSchedulePreview() {
+  const body = document.getElementById("schedule-preview-body");
+  if (!body) return;
+  const schedules = STATE.schedules || [];
+  if (schedules.length === 0) {
+    body.innerHTML = '<div class="empty"><p>등록된 일정이 없습니다</p></div>';
+    return;
+  }
+  // 날짜 기준 정렬
+  const sorted = [...schedules].sort((a,b) => (a.date||"") > (b.date||"") ? 1 : -1);
+  // 전체 기간 계산 (진행률 바용)
+  const dates = sorted.filter(s=>s.date).map(s=>new Date(s.date).getTime());
+  const minDate = dates.length ? Math.min(...dates) : Date.now();
+  const maxDate = dates.length ? Math.max(...dates) : Date.now();
+  const today = Date.now();
+
+  body.innerHTML = sorted.map(s => {
+    const diff = getDday(s.date);
+    if (diff === null) return "";
+    const cls = ddayClass(diff);
+    const label = ddayLabel(diff);
+    const dateStr = s.date ? new Date(s.date).toLocaleDateString('ko-KR', {year:'numeric', month:'long', day:'numeric', weekday:'short'}) : "";
+    // 진행률 바: 오늘이 이 일정까지 얼마나 왔는지
+    const total = maxDate - minDate || 1;
+    const elapsed = Math.max(0, Math.min(total, today - minDate));
+    const pct = Math.round(elapsed / total * 100);
+    const barColor = cls === "done" ? "var(--text4)" : cls === "urgent" ? "var(--red)" : cls === "soon" ? "var(--amber)" : "var(--teal)";
+    return `<div class="schedule-item">
+      <div class="schedule-dday" style="color:${barColor}">${label}</div>
+      <div class="schedule-info">
+        <div class="schedule-name">${s.name}</div>
+        <div class="schedule-date">${dateStr}</div>
+        ${diff < 0 ? '<span class="badge b-gray" style="font-size:9px;margin-top:4px">완료</span>' : ''}
+      </div>
+    </div>`;
+  }).join("");
+}
+
+function addScheduleRow() {
+  if (!STATE.schedules) STATE.schedules = [];
+  STATE.schedules.push({ id: "s" + uid(), name: "", date: "", color: "normal" });
+  renderScheduleForm();
+}
+
+function removeSchedule(idx) {
+  STATE.schedules.splice(idx, 1);
+  renderScheduleForm();
+  renderDdayBar();
+  renderSchedulePreview();
+}
+
+function saveSchedule() {
+  saveState();
+  renderDdayBar();
+  renderSchedulePreview();
+  toast("✅ 일정이 저장되었습니다");
+  // 구글 시트 연동 시 일정도 동기화 (별도 키로 저장)
+  if (GS_CONFIG.url && GS_CONFIG.connected) {
+    syncScheduleToSheet();
+  }
+}
+
+// 구글 시트에 일정 저장 (설정 시트)
+function syncScheduleToSheet() {
+  try {
+    localStorage.setItem("shared_schedules", JSON.stringify(STATE.schedules));
+  } catch(e) {}
+  // Apps Script로 일정 전송 (saveBatch의 특수 region "_SCHEDULE_" 활용)
+  const payload = JSON.stringify({
+    action: "saveBatch",
+    editor: CURRENT_USER ? CURRENT_USER.name : "관리자",
+    items: [{
+      region: "_SCHEDULE_",
+      pid: "schedule_config",
+      name: "일정설정",
+      dept: "", type: "", evalType: "", amt: 0,
+      status: "설정",
+      score: null, grade: null, relGrade: null,
+      comment: JSON.stringify(STATE.schedules),
+      reqDocs: "", interviewDate: "", memo: "",
+      scoreDetail: {}, deducts: {},
+    }],
+  });
+  fetch(GS_CONFIG.url, {
+    method: "POST",
+    headers: { "Content-Type": "text/plain;charset=utf-8" },
+    body: payload,
+    redirect: "follow",
+  }).then(r => r.text()).then(text => {
+    if (!text.trim().startsWith("<!")) {
+      const json = JSON.parse(text);
+      if (json.ok) toast("✅ 일정이 구글 시트에도 저장되었습니다");
+    }
+  }).catch(() => {});
+}
+
+// 구글 시트에서 일정 불러오기
+function loadScheduleFromSheet(sheetData) {
+  // _SCHEDULE_ region에서 schedule_config 항목 찾기
+  const scheduleRegion = (sheetData || {})["_SCHEDULE_"] || {};
+  const cfg = scheduleRegion["schedule_config"];
+  if (cfg && cfg.comment) {
+    try {
+      const parsed = JSON.parse(cfg.comment);
+      if (Array.isArray(parsed) && parsed.length > 0) {
+        STATE.schedules = parsed;
+        renderDdayBar();
+        return true;
+      }
+    } catch(e) {}
+  }
+  return false;
+}
+
 /* ── INIT ── */
 (function init() {
   loadState();
   loadGsConfig();
   initDefaultRegions();
-  migrateSeq();        // seq 없는 기존 데이터 보정
+  migrateSeq();
+  initSchedules();
+  renderDdayBar();
   updateTypeOptions();
   renderIndicatorKeyOptions();
 
